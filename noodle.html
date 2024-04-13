@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Message Board</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .message-box {
+            background-color: #fff; /* White message box */
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .message-display {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .messages {
+            list-style: none; /* Remove default bullet points */
+            margin: 0;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 200px; /* Limit message list height */
+            overflow-y: scroll; /* Enable scrolling for long message lists */
+        }
+
+        .message {
+            margin-bottom: 5px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            animation: slide-in 0.5s ease-in-out forwards; /* Animation for new messages */
+        }
+
+        @keyframes slide-in {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <p class="message-display">Write your message here...</p>
+        <input type="text" class="message-input" id="message-input">
+        <button type="button" id="submit-button">Submit</button>
+        <ul class="messages"></ul>
+    </div>
+
+    <script>
+        const messageInput = document.getElementById("message-input");
+        const submitButton = document.getElementById("submit-button");
+        const messageDisplay = document.querySelector(".message-display");
+        const messageList = document.querySelector(".messages");
+
+        submitButton.addEventListener("click", function() {
+            const newMessage = messageInput.value;
+            if (newMessage.trim() !== "") { // Check if message is not empty
+                const messageElement = document.createElement("li");
+                messageElement.classList.add("message");
+                messageElement.textContent = newMessage;
+                messageList.appendChild(messageElement);
+
+                messageDisplay.textContent = newMessage;
+                messageInput.value = ""; // Clear input after submit
+            }
+        });
+    </script>
+</body>
+</html>
