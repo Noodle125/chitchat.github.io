@@ -1,58 +1,50 @@
-// **Important Note:**
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAlLRg-irrAb1RNC-zvWWkb79GWqLe0XDc",
+  authDomain: "stx-373b2.firebaseapp.com",
+  databaseURL: "https://stx-373b2-default-rtdb.firebaseio.com",
+  projectId: "stx-373b2",
+  storageBucket: "stx-373b2.appspot.com",
+  messagingSenderId: "714624842537",
+  appId: "1:714624842537:web:54fc08b0fdbd6226e1d538"
+};
 
-While the previous code snippet included a Firebase configuration, using a real-time database like Firebase for this simple message board may be overkill. It introduces unnecessary complexity and potential costs. Here are alternative, more suitable approaches:
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
-1. **Client-Side Storage (Limited Persistence):**
-   - Store messages directly in the browser's local storage or session storage. This offers a quick solution but messages are lost when users refresh the page or close the browser.
-
-2. **Server-Side Storage (Persistent):**
-   - If you need messages to persist across sessions, consider implementing a simple server-side script (e.g., Node.js, Python) to store messages in a database like MongoDB or a flat-file database. This requires setting up a server-side component.
-
-**Here's the code without Firebase, assuming client-side storage (local storage):**
+// Get a reference to the Firebase database
+const database = firebase.database();
 
 document.addEventListener("DOMContentLoaded", function() {
-  const messageInput = document.getElementById("message-input");
-  const submitButton = document.getElementById("submit-button");
-  const chatMessages = document.getElementById("chat-messages");
+    const messageInput = document.getElementById("message-input");
+    const submitButton = document.getElementById("submit-button");
+    const chatMessages = document.getElementById("chat-messages");
 
-  // Function to add a message to the chat (using local storage)
-  function addMessage(message) {
-    const messageElement = document.createElement("div");
-    messageElement.textContent = message;
-    chatMessages.appendChild(messageElement);
-
-    // Get existing messages from local storage (or initialize empty array)
-    let storedMessages = JSON.parse(localStorage.getItem("chatMessages")) || [];
-    storedMessages.push(message); // Add new message to the array
-
-    // Update local storage with the new messages array
-    localStorage.setItem("chatMessages", JSON.stringify(storedMessages));
-  }
-
-  // Event listener for the submit button
-  submitButton.addEventListener("click", function() {
-    const messageText = messageInput.value.trim();
-    if (messageText !== "") {
-      addMessage(messageText);
-      messageInput.value = ""; // Clear input
+    // Function to add a message to the chat
+    function addMessage(message) {
+        const messageElement = document.createElement("div");
+        messageElement.textContent = message;
+        chatMessages.appendChild(messageElement);
     }
-  });
 
-  // Event listener for Enter key
-  messageInput.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-      submitButton.click();
-    }
-  });
+    // Event listener for the submit button
+    submitButton.addEventListener("click", function() {
+        const messageText = messageInput.value.trim();
+        if (messageText !== "") {
+            // Store message in Firebase Realtime Database
+            database.ref("messages").push().set({
+                message: messageText
+            });
+            messageInput.value = ""; // Clear input
+        }
+    });
 
-  // Function to load messages from local storage on page load (optional)
-  function loadMessages() {
-    const storedMessages = JSON.parse(localStorage.getItem("chatMessages")) || [];
-    storedMessages.forEach(addMessage); // Display existing messages
-  }
-
-  // Call the loadMessages function to display existing messages (optional)
-  loadMessages();
+    // Load existing messages from Firebase Realtime Database
+    database.ref("messages").on("child_added", function(snapshot) {
+        const message = snapshot.val().message;
+        addMessage(message);
+    });
 });
+
 
 
