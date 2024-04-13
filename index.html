@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Message Board</title>
+    <title>Public Chat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="message-box">
-        <p class="message-display">Write your message here...</p>
-        <input type="text" class="message-input" id="message-input">
-        <button type="button" id="submit-button">Submit</button>
-        <ul class="messages"></ul>
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="message-box">
+            <input type="text" class="message-input" id="message-input" placeholder="Type your message...">
+            <button type="button" id="submit-button">Send</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
