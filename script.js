@@ -16,35 +16,37 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 document.addEventListener("DOMContentLoaded", function() {
+    const usernameInput = document.getElementById("username-input");
     const messageInput = document.getElementById("message-input");
     const submitButton = document.getElementById("submit-button");
     const chatMessages = document.getElementById("chat-messages");
 
     // Function to add a message to the chat
-    function addMessage(message) {
+    function addMessage(username, message) {
         const messageElement = document.createElement("div");
-        messageElement.textContent = message;
+        messageElement.textContent = username + ": " + message;
         chatMessages.appendChild(messageElement);
     }
 
     // Event listener for the submit button
     submitButton.addEventListener("click", function() {
+        const username = usernameInput.value.trim();
         const messageText = messageInput.value.trim();
-        if (messageText !== "") {
+        if (username !== "" && messageText !== "") {
             // Store message in Firebase Realtime Database
             database.ref("messages").push().set({
+                username: username,
                 message: messageText
             });
-            messageInput.value = ""; // Clear input
+            messageInput.value = ""; // Clear message input
         }
     });
 
     // Load existing messages from Firebase Realtime Database
     database.ref("messages").on("child_added", function(snapshot) {
-        const message = snapshot.val().message;
-        addMessage(message);
+        const messageData = snapshot.val();
+        const username = messageData.username;
+        const message = messageData.message;
+        addMessage(username, message);
     });
 });
-
-
-
